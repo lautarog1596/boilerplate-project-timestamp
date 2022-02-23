@@ -41,17 +41,21 @@ app.get("/api/:date_string", function(req, res) {
   // Note that the unix timestamp need to be an integer (not a string) specifying milliseconds.
   // In our test we will use date strings compliant with ISO-8601 (e.g. "2016-11-20") because this 
   // will ensure an UTC timestamp
-  var date = new Date(date_string);
 
-  // 4. if the date string is valid the api returns a JSON having the structure:
-  // {"unix": <date.getTime()>, "utc": <date.toUTCString()>}
-  if (date.toString() !== "Invalid Date") {
-    res.json({unix: date.getTime(), utc: date.toUTCString()});
-  }else{
-    // 5. if the date string is invalid the api returns a JSON object with the error message
-    res.json({"error" : "Invalid Date"})
+  if (/^\d{5,}$/.test(date_string)) date_string = parseInt(date_string);
+
+  const date = new Date(date_string);
+
+  if (date.toString() == "Invalid Date") {
+    res.json({error: "Invalid Date" });
+  } else {
+    res.json({
+      unix: date.valueOf(),
+      utc: date.toUTCString()
+    });
   }
 })
+
 
 
 // listen for requests :)
