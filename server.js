@@ -18,6 +18,10 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.get("/timestamp", function (req, res) {
+  res.sendFile(__dirname + '/views/timestamp.html');
+});
+
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
@@ -26,7 +30,7 @@ app.get("/api/hello", function (req, res) {
 
 
 // 3. if the date string is empty it should be equivalent to trigger new Date(), i.e. the service uses the current timestamp
-app.get("/api", function(req, res) {
+app.get("/timestamp/api", function(req, res) {
   let now = new Date();
   res.json({
     unix: now.getTime(),
@@ -35,7 +39,7 @@ app.get("/api", function(req, res) {
 });
 
 // 1. The API endpoint is GET [project_url]/api/:date_string
-app.get("/api/:date_string", function(req, res) {
+app.get("/timestamp/api/:date_string", function(req, res) {
   var date_string = req.params.date_string;
   // 2. A date string is valid if can be successfully parsed by new Date(date_string).
   // Note that the unix timestamp need to be an integer (not a string) specifying milliseconds.
