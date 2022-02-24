@@ -104,7 +104,6 @@ var urlSchema = new mongoose.Schema({
   original_url: String,
   short_url: String
 });
-
 var Url = mongoose.model('Url', urlSchema);
 
 app.post("/api/shorturl", (req, res) => {
@@ -141,6 +140,44 @@ app.get("/api/shorturl/:short_url", (req, res) => {
     res.redirect(url.original_url);
   });
 })
+
+// ---- EXERCISE TRACKER MICROSERVICE ---- //
+// Build a schema and model to store saved Users
+var userSchema = new mongoose.Schema({
+  _id: String,
+  username: String
+});
+var User = mongoose.model('User', userSchema);
+
+// You can POST to /api/users with form data username to create a new user.
+// The returned response from POST /api/users with form data username will be an object with username and _id properties.
+app.post("/api/users", (req, res) => {
+  let username = req.body.username;
+  let newUser = new User({
+    username: username,
+    _id: shortid.generate()
+  });
+  newUser.save(function(err, newUser) {
+    if (err) return console.error(err);
+    console.log("Document inserted successfully! ", newUser);
+    res.json({
+      username: newUser.username,
+      _id: newUser._id
+    });
+  });
+});
+
+// You can make a GET request to /api/users to get a list of all users.
+// The GET request to /api/users returns an array.
+// Each element in the array returned from GET /api/users is an object literal containing a user's username and _id.
+app.get("/api/users", (req, res) => {
+  User.find(function(err, users) {
+    if (err) return console.error(err);
+    console.log("Document found! ", users);
+    res.json(users);
+  });
+});
+
 
 
 // listen for requests :)
