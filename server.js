@@ -44,12 +44,8 @@ app.get("/shortUrl", function (req, res) {
   res.sendFile(__dirname + '/views/shortUrl.html');
 });
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
 
-
+// ---- TIMESTAMP MICROSERVICE ---- //
 // 3. if the date string is empty it should be equivalent to trigger new Date(), i.e. the service uses the current timestamp
 app.get("/timestamp/api", function(req, res) {
   let now = new Date();
@@ -81,6 +77,8 @@ app.get("/timestamp/api/:date_string", function(req, res) {
   }
 })
 
+
+// ---- REQUEST HEADER PARSER MICROSERVICE ---- //
 app.get("/requestHeaderParser/api/whoami", (req, res) => {
   // get ip address from request
   let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -95,16 +93,17 @@ app.get("/requestHeaderParser/api/whoami", (req, res) => {
   });
 })
 
+
+// ---- URL SHORTENER MICROSERVICE ---- //
 // Build a schema and model to store saved URLS
 var urlSchema = new mongoose.Schema({
   original_url: String,
-  short_url: String,
-  sufix: String
+  short_url: String
 });
 
 var Url = mongoose.model('Url', urlSchema);
 
-app.post("/shortUrl/api", (req, res) => {
+app.post("/api/shorturl", (req, res) => {
   let url = req.body.url;
   // If you pass an invalid URL that doesn't follow the valid http://www.example.com format, the JSON response will contain { error: 'invalid url' }
   if (url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
@@ -115,8 +114,7 @@ app.post("/shortUrl/api", (req, res) => {
 
     let newUrl = new Url({
       original_url: url,
-      short_url: __dirname + "/shortUrl/api/" + suffix,
-      sufix: suffix
+      short_url: suffix,
     });
 
     // save newUrl to database
@@ -125,16 +123,15 @@ app.post("/shortUrl/api", (req, res) => {
       console.log("Document inserted successfully! ", newUrl);
       res.json({
         original_url: newUrl.original_url,
-        short_url: newUrl.short_url,
-        sufix: newUrl.sufix
+        short_url: newUrl.short_url
       });
     });
   }
 });
 
-app.get("/shortUrl/api/:sufix", (req, res) => {
-  let sufix = req.params.sufix;
-  Url.findOne({ sufix: sufix }, function(err, url) {
+app.get("/api/shorturl/:short_url", (req, res) => {
+  let short_url = req.params.short_url;
+  Url.findOne({ short_url: short_url }, function(err, url) {
     if (err) return console.error(err);
     console.log("Document found! ", url);
     res.redirect(url.original_url);
