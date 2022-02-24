@@ -44,6 +44,10 @@ app.get("/shortUrl", function (req, res) {
   res.sendFile(__dirname + '/views/shortUrl.html');
 });
 
+app.get("/exerciseTracker", function (req, res) {
+  res.sendFile(__dirname + '/views/exerciseTracker.html');
+});
+
 
 // ---- TIMESTAMP MICROSERVICE ---- //
 // 3. if the date string is empty it should be equivalent to trigger new Date(), i.e. the service uses the current timestamp
