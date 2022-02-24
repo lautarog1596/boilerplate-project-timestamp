@@ -5,10 +5,19 @@
 require('dotenv').config();
 var express = require('express');
 var mongo = require('mongodb');
+var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var shortid = require('shortid');
 var app = express();
-
 const port = process.env.PORT || 3000;
+
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -85,6 +94,48 @@ app.get("/requestHeaderParser/api/whoami", (req, res) => {
     software: software
   });
 })
+
+// Build a schema and model to store saved URLS
+var urlSchema = new mongoose.Schema({
+  original_url: String,
+  short_url: String,
+  sufix: String
+});
+
+var Url = mongoose.model('Url', urlSchema);
+
+app.post("/shortUrl/api", (req, res) => {
+  let url = req.body.url;
+  let suffix = shortid.generate();
+
+  let newUrl = new Url({
+    original_url: url,
+    short_url: __dirname + "/shortUrl/api/" + suffix,
+    sufix: suffix
+  });
+
+  // save newUrl to database
+  newUrl.save(function(err, newUrl) {
+    if (err) return console.error(err);
+    console.log("Document inserted successfully! ", newUrl);
+    res.json({
+      original_url: newUrl.original_url,
+      short_url: newUrl.short_url,
+      sufix: newUrl.sufix
+    });
+  });
+})
+
+app.get("/shortUrl/api/:sufix", (req, res) => {
+  let sufix = req.params.sufix;
+  Url.findOne({ sufix: sufix }, function(err, url) {
+    if (err) return console.error(err);
+    console.log("Document found! ", url);
+    res.redirect(url.original_url);
+  });
+
+})
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
