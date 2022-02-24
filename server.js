@@ -63,7 +63,19 @@ app.get("/timestamp/api/:date_string", function(req, res) {
   }
 })
 
-
+app.get("/requestHeaderParser/api/whoami", (req, res) => {
+  // get ip address from request
+  let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  // get language from request
+  let language = req.headers['accept-language'];
+  // get software from request
+  let software = req.headers['user-agent'];
+  res.json({
+    ipaddress: ip,
+    language: language,
+    software: software
+  });
+})
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
