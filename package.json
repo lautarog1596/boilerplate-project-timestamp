@@ -2,30 +2,36 @@
 	"name": "fcc-api-projects-boilerplate",
 	"version": "0.0.1",
 	"description": "An FCC Backend Challenge",
-  "engines": {
-    "node": "12.x"
-  },
+	"engines": {
+		"node": "12.x"
+	},
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
-    "test": "node test.js"
+		"test": "node test.js",
+		"dev": "nodemon server.js"
 	},
 	"dependencies": {
-    "ejs": "^2.5.6",
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.0",
+		"dotenv": "^8.2.0",
+		"ejs": "^2.5.6",
 		"express": "^4.12.4",
-		"cors": "^2.8.0"
+		"mongodb": "^4.4.0",
+		"mongoose": "^6.2.3"
 	},
-  "devDependencies": {
-    "got": "^11.3.0",
-    "tape": "^4.7.0"
-  },
+	"devDependencies": {
+		"got": "^11.3.0",
+		"nodemon": "^2.0.4",
+		"tape": "^4.7.0"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/lautarog1596/boilerplate-project-timestamp"
 	},
 	"keywords": [
 		"node",
-    "heroku",
+		"heroku",
 		"hyperdev",
 		"express",
 		"freecodecamp"

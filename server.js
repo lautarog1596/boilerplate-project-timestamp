@@ -2,8 +2,13 @@
 // where your node app starts
 
 // init project
+require('dotenv').config();
 var express = require('express');
+var mongo = require('mongodb');
+var mongoose = require('mongoose');
 var app = express();
+
+const port = process.env.PORT || 3000;
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -24,6 +29,10 @@ app.get("/timestamp", function (req, res) {
 
 app.get("/requestHeaderParser", function (req, res) {
   res.sendFile(__dirname + '/views/requestHeaderParser.html');
+});
+
+app.get("/shortUrl", function (req, res) {
+  res.sendFile(__dirname + '/views/shortUrl.html');
 });
 
 // your first API endpoint... 
@@ -78,6 +87,6 @@ app.get("/requestHeaderParser/api/whoami", (req, res) => {
 })
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+var listener = app.listen(port, function () {
+  console.log('Your app is listening on port ' + port);
 });
