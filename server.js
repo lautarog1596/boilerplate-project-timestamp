@@ -106,25 +106,31 @@ var Url = mongoose.model('Url', urlSchema);
 
 app.post("/shortUrl/api", (req, res) => {
   let url = req.body.url;
-  let suffix = shortid.generate();
+  // If you pass an invalid URL that doesn't follow the valid http://www.example.com format, the JSON response will contain { error: 'invalid url' }
+  if (url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
+    res.json({error: "Invalid URL"});
+  } else {
 
-  let newUrl = new Url({
-    original_url: url,
-    short_url: __dirname + "/shortUrl/api/" + suffix,
-    sufix: suffix
-  });
+    let suffix = shortid.generate();
 
-  // save newUrl to database
-  newUrl.save(function(err, newUrl) {
-    if (err) return console.error(err);
-    console.log("Document inserted successfully! ", newUrl);
-    res.json({
-      original_url: newUrl.original_url,
-      short_url: newUrl.short_url,
-      sufix: newUrl.sufix
+    let newUrl = new Url({
+      original_url: url,
+      short_url: __dirname + "/shortUrl/api/" + suffix,
+      sufix: suffix
     });
-  });
-})
+
+    // save newUrl to database
+    newUrl.save(function(err, newUrl) {
+      if (err) return console.error(err);
+      console.log("Document inserted successfully! ", newUrl);
+      res.json({
+        original_url: newUrl.original_url,
+        short_url: newUrl.short_url,
+        sufix: newUrl.sufix
+      });
+    });
+  }
+});
 
 app.get("/shortUrl/api/:sufix", (req, res) => {
   let sufix = req.params.sufix;
@@ -133,7 +139,6 @@ app.get("/shortUrl/api/:sufix", (req, res) => {
     console.log("Document found! ", url);
     res.redirect(url.original_url);
   });
-
 })
 
 
