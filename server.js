@@ -8,6 +8,7 @@ var mongo = require('mongodb');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var shortid = require('shortid');
+const multer  = require('multer')
 var app = express();
 const port = process.env.PORT || 3000;
 
@@ -46,6 +47,10 @@ app.get("/shortUrl", function (req, res) {
 
 app.get("/exerciseTracker", function (req, res) {
   res.sendFile(__dirname + '/views/exerciseTracker.html');
+});
+
+app.get('/fileanalyse', function (req, res) {
+  res.sendFile(process.cwd() + '/views/fileanalyse.html');
 });
 
 
@@ -237,6 +242,24 @@ app.get("/api/users/:_id/logs", (req, res) => {
   });
 });
 
+
+// ---- FILE METADATA MICROSERVICE ---- //
+// HINT: You can use the multer npm package to handle file uploading.
+// You can submit a form that includes a file upload.
+// The form file input field has the name attribute set to upfile.
+// When you submit a file, you receive the file name, type, and size in bytes within the JSON response.
+app.post("/api/fileanalyse", multer().single('upfile'), (req, res) => {
+  let file = req.file;
+  if (file) {
+    res.json({
+      name: file.originalname,
+      type: file.mimetype,
+      size: file.size
+    });
+  } else {
+    res.json({error: "No file uploaded"});
+  }
+});
 
 
 // listen for requests :)
