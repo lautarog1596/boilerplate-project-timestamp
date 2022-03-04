@@ -30,7 +30,7 @@ app.use(require('./routes/timestamp'));
 app.use(require('./routes/requestHeaderParser'));
 app.use(require('./routes/shortUrl'));
 app.use(require('./routes/exerciseTracker'));
-app.use(require('./routes/fileanalyse'));
+app.use(require('./routes/fileAnalyse'));
 
 // listen for requests :)
 var listener = app.listen(app.get('port'), () => {
